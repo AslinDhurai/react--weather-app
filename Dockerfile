@@ -1,14 +1,13 @@
-# Stage 1: Build Node.js application
-FROM node:latest AS builder
+# Stage 1: Build the React app
+FROM node:18 AS builder
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run build # Or your specific build command for static assets
+RUN npm run build
 
-# Stage 2: Serve with Nginx
+# Stage 2: Serve the app with Nginx
 FROM nginx:alpine
-COPY --from=builder /app/build /usr/share/nginx/html # Copy built static files
-COPY nginx.conf /etc/nginx/conf.d/default.conf # Copy custom Nginx configuration
+COPY --from=builder /app/build /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
