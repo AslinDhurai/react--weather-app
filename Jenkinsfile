@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    tools {
+        docker 'Docker'
+    }
     // environment {
     //     AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
     //     AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
@@ -26,7 +29,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 echo 'Building..'
-                sh 'Docker build -t weather .'
+                sh 'Docker build -t weather:latest .'
             }
         }
          stage('Docker Push') {
