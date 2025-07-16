@@ -12,9 +12,9 @@ pipeline {
                 withSonarQubeEnv(credentialsId: 'SonarQube-ID', installationName: 'Sonar') {
                     sh '''
                         ${scannerHome}/bin/sonar-scanner \
-                        -Dsonar.ce.timeout=1800 \  # 30 minutes
-                        -Dsonar.scm.disabled=true \  # Disable SCM
-                        -Dsonar.analysis.timeout=1800  # 30 minutes
+                        -Dsonar.ce.timeout=1800 \  
+                        -Dsonar.scm.disabled=true \ 
+                        -Dsonar.analysis.timeout=1800 
                     '''
                 }
             }
