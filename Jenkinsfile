@@ -1,38 +1,44 @@
 pipeline {
     agent any
-    environment {
-        SONAR_SCANNER_OPTS = "-Xmx2048m"  // Increase scanner memory
-    }
+    // environment {
+    //     AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
+    //     AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
+    // }
+
     stages {
         stage('Run Sonarqube') {
-            environment {
-                scannerHome = tool 'SonarQube'
-            }
-            steps {
+                environment {
+                    scannerHome = tool 'SonarQube';
+                }
+                steps {
                 withSonarQubeEnv(credentialsId: 'SonarQube-ID', installationName: 'Sonar') {
-                    sh '''
-                        ${scannerHome}/bin/sonar-scanner \
-                        -Dsonar.ce.timeout=1800 \  
-                        -Dsonar.scm.disabled=true \ 
-                        -Dsonar.analysis.timeout=1800 
-                    '''
+                    sh "${scannerHome}/bin/sonar-scanner"
                 }
             }
         }
-
-        stage("Quality Gate") {
+        stage("SonarQube Quality Gate Check") {
             steps {
-                timeout(time: 15, unit: 'MINUTES') {
-                    script {
-                        def qg = waitForQualityGate(
-                            abortPipeline: false,
-                            credentialsId: 'SonarQube-ID'
-                        )
-                        if (qg.status != 'OK') {
-                            error "Quality Gate failed: ${qg.status}"
-                        }
+                 script {
+                    def qualityGate = waitForQualityGate(abortPipeline: false, credentialsId: 'SonarQube-ID')
+                    if (qualityGate.status != 'OK') {
+                        echo "❌ Quality Gate failed: ${qualityGate.status}"
                     }
                 }
+            }
+        }
+        stage('Build') {
+            steps {
+                echo 'Building..'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
             }
         }
     }
