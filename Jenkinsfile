@@ -23,9 +23,18 @@ pipeline {
                 } 
             }
         }
-        stage('Build') {
+        stage('Docker Build') {
             steps {
                 echo 'Building..'
+                app = docker.build("aslindhurai/weather")
+            }
+        }
+         stage('Docker Push') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+                    sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+                    sh 'docker push aslindhurai/weather:latest'
+                }
             }
         }
         stage('Test') {
