@@ -10,18 +10,19 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv(credentialsId: 'SonarQube-ID', installationName: 'Sonar') {
-                    sh """
+                    sh '''
                         ${scannerHome}/bin/sonar-scanner \
-                        -Dsonar.ce.timeout=1800 \  
-                        -Dsonar.scm.disabled=true \  
-                        -Dsonar.analysis.timeout=1800
-                    """
+                        -Dsonar.ce.timeout=1800 \  # 30 minutes
+                        -Dsonar.scm.disabled=true \  # Disable SCM
+                        -Dsonar.analysis.timeout=1800  # 30 minutes
+                    '''
                 }
             }
         }
+
         stage("Quality Gate") {
             steps {
-                timeout(time: 15, unit: 'MINUTES') {  // Reduced timeout
+                timeout(time: 15, unit: 'MINUTES') {
                     script {
                         def qg = waitForQualityGate(
                             abortPipeline: false,
@@ -34,6 +35,5 @@ pipeline {
                 }
             }
         }
-        // Other stages...
     }
 }
