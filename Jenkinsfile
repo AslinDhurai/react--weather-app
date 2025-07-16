@@ -3,10 +3,11 @@ pipeline {
     tools {
         dockerTool 'Docker'
     }
-    // environment {
-    //     AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
-    //     AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
-    // }
+    environment {
+        // AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
+        // AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
+        DOCKER_IMAGE = 'aslindhurai/weather:latest'
+    }
 
     stages {
         stage('Run Sonarqube') {
@@ -29,7 +30,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 echo 'Building..'
-                sh 'docker build -t aslindhurai/weather:latest .'
+                sh 'docker build -t ${DOCKER_IMAGE} .'
             }
         }
          stage('Docker Push') {
@@ -43,7 +44,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing..'
-                sh 'Trivy --version'
+                sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/root/.cache/ aquasec/trivy:latest image ${DOCKER_IMAGE}'
             }
         }
         stage('Deploy') {
