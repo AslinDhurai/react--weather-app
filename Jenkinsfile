@@ -26,7 +26,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 echo 'Building..'
-                app = docker.build("aslindhurai/weather")
+                sh 'Docker build -t weather .'
             }
         }
          stage('Docker Push') {
