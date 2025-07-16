@@ -43,6 +43,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing..'
+                sh 'Trivy --version'
             }
         }
         stage('Deploy') {
