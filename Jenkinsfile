@@ -7,6 +7,9 @@ pipeline {
 
     stages {
         stage('Run Sonarqube') {
+                environment {
+                    scannerHome = tool 'SonarQube';
+                }
                 steps {
                 withSonarQubeEnv(credentialsId: 'SonarQube-ID', installationName: 'Sonar') {
                     sh "${scannerHome}/bin/sonar-scanner"
