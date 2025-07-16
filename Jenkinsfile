@@ -29,7 +29,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 echo 'Building..'
-                sh 'docker build -t weather:latest .'
+                sh 'docker build -t aslindhurai/weather:latest .'
             }
         }
          stage('Docker Push') {
