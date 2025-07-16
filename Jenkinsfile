@@ -49,7 +49,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                echo 'docker run -td -p 5000:80 ${DOCKER_IMAGE}'
+                sh 'docker run -td -p 80:80 ${DOCKER_IMAGE}'
             }
         }
     }
