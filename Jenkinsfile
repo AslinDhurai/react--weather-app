@@ -7,9 +7,6 @@ pipeline {
 
     stages {
         stage('Run Sonarqube') {
-                environment {
-                    scannerHome = tool 'SonarQube';
-                }
                 steps {
                 withSonarQubeEnv(credentialsId: 'SonarQube-ID', installationName: 'Sonar') {
                     sh "${scannerHome}/bin/sonar-scanner"
@@ -21,7 +18,7 @@ pipeline {
                  script {
                     def qualityGate = waitForQualityGate(abortPipeline: false, credentialsId: 'SonarQube-ID')
                     if (qualityGate.status != 'OK') {
-                        echo "❌ Quality Gate failed: ${qualityGate.status}"
+                        echo "Quality Gate failed: ${qualityGate.status}"
                     }
                 }
             }
